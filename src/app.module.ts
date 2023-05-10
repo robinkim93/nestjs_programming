@@ -1,12 +1,22 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
-import { EmailService } from './email/email.service';
+import { EmailModule } from './email/email.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule],
-  controllers: [UsersController],
-  providers: [UsersService, EmailService],
+  imports: [
+    UsersModule,
+    EmailModule,
+    ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.production.env'
+          : process.env.NODE_ENV === 'stage'
+          ? '.stage.env'
+          : '.development.env',
+    }),
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
