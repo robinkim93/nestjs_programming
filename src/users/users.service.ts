@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { EmailService } from 'src/email/email.service';
 import * as uuid from 'uuid';
+import * as ulid from 'ulid';
 import { UserInfo } from './UserInfo';
+import { UserEntity } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly emailService: EmailService) {}
+  constructor(
+    private readonly emailService: EmailService,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
   async createUser(name: string, email: string, password: string) {
     await this.checkUserExists(email);
 
@@ -39,13 +47,20 @@ export class UsersService {
     return false; // 구현예정
   }
 
-  private saveUser(
+  private async saveUser(
     name: string,
     email: string,
     password: string,
     signupVerifyToken: string,
   ) {
-    return; // 구현예정
+    const user = new UserEntity();
+    user.id = uuid.v1();
+    user.name = name;
+    user.email = email;
+    user.password = password;
+    user.signupVerifyToken = signupVerifyToken;
+
+    await this.userRepository.save(user);
   }
 
   private async sendMemberJoinEmail(email: string, signupVerifyToken: string) {
