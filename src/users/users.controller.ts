@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Query,
-  Param,
-  Get,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Query, Param, Get } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UserLoginDto } from './dto/user-login.dto';
